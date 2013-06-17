@@ -1,0 +1,118 @@
+/ result_success
+.container
+  .row
+    .posts.span8
+      %h5.muted Recommended Posts
+      %ol.unstyled
+        - @top_posts.each do |post_cont|
+          - post, score, blog_ids, post_id = prepare_post(post_cont)
+          %li(id="#{post_id}" data-blogs="#{blog_ids}")
+            .post(class="#{post['type']}")
+              .post_header.row
+                .post_cont.span6
+                  %span.post_score= score
+                  %span points by
+                  %span
+                    - post_cont[:blogs].each do |blog_name|
+                      - blog_host = @top_blogs_h[blog_name][:host]
+                      %a(href="http://#{blog_host}" title="#{blog_host}" target="_blank")><
+                        %img.avatar.img-rounded.lazy(src="/img/gray.png" data-original="http://api.tumblr.com/v2/blog/#{blog_host}/avatar/24" alt="#{blog_host}")
+                .post_controls.text-right
+                  %a.open_btn(title="Open" href="#{post['post_url']}" target="_blank")
+                    %i.icon-share-alt
+                  %a.reblog_open.btn.btn-mini.btn-info(title="Reblog" href="http://www.tumblr.com/reblog/#{post['id']}/#{post['reblog_key']}?redirect_to=http%3A%2F%2F#{@host_name_enc}/close" target="_blank" onclick="Simblr.reblog(this.href,'#{post_id}');return false;")
+                    %i.icon-retweet.icon-white
+              .post_body
+                - case post['type']
+                - when 'text' then
+                  .post_title= s(post['title'])
+                  .text_body= s(post['body'])
+                - when 'photo' then
+                  .photoset
+                    - photoset = prepare_photoset(post)
+                    - photoset.each do |photos_row_cont|
+                      .photoset_row(style="height: #{photos_row_cont[:height]}px")
+                        - photos_row_cont[:photos_row].each do |photo|
+                          - style = photo[:margin_top] != 0 ? "margin-top: #{photo[:margin_top]}px; width: #{photo[:width]}px" : "width: #{photo[:width]}px"
+                          %a(href="#{photo[:big_url]}" target="_blank" title="#{photo[:sub_caption]}")><
+                            %img.lazy(src="/img/gray.png" data-original="#{photo[:url]}" alt="#{photo[:sub_caption]}" style="#{style}")
+                  .caption= s(post['caption'])
+                - when 'quote' then
+                  %div= s(post['text'])
+                  %div
+                    %table.quote_source_table
+                      %tbody
+                        %tr
+                          %td.quote_source_mdash(valign="top") —
+                          %td.quote_source(valign="top")= s(post['source'])
+                - when 'link' then
+                  .link_title.well
+                    %a(href="#{post['url']}" target="_blank")= s(post['title'])
+                  .link_desc= s(post['description'])
+                - when 'chat' then
+                  .post_title= s(post['title'])
+                  %ul.chat_dialogue.unstyled
+                    - post['dialogue'].each do |line|
+                      %li.chat_line
+                        %span.chat_label= s(line['label'])
+                        %span.chat_phrase= s(line['phrase'])
+                - when 'audio' then
+                  .audio_embed= post['player']
+                  .audio_caption= s(post['caption'])
+                - when 'video' then
+                  - embed_code = prepare_video(post)
+                  .video_embed_code= embed_code
+                  .video_caption= s(post['caption'])
+                - when 'answer' then
+                  - asking_name = s(post['asking_name'])
+                  - asking_url = s(post['asking_url'])
+                  - asking_tag = nil
+                  - if asking_url.nil?
+                    - asking_tag = "<img class=\"avatar img-rounded lazy\" src=\"img/gray.png\" data-original=\"http://www.tumblr.com/images/anonymous_avatar_24.gif\" alt=\"#{asking_name}\" title=\"#{asking_name}\">"
+                  - else
+                    - asking_host = asking_url.scan(/http:\/\/([^\/]+)\//)[0][0]
+                    - asking_tag = "<a href=\"#{asking_url}\" target=\"_blank\"><img class=\"avatar img-rounded lazy\" src=\"img/gray.png\" data-original=\"http://api.tumblr.com/v2/blog/#{asking_host}/avatar/24\" alt=\"#{asking_host}\"></a>"
+                  %ul.chat_dialogue.unstyled
+                    %li.chat_line.question
+                      .well #{asking_tag}&nbsp;#{s(post['question'])}
+                    %li.chat_line.answer= s(post['answer'])
+              - unless post['reblogged_root_name'].nil?
+                .post_footer
+                  .muted.text-right <small>Source: <a href="#{post['reblogged_root_url']}" target="_blank">#{post['reblogged_root_name']}</a></small>
+    .span4
+      #sidebar(data-spy="affix")
+        #sidebar_main
+          %h5.muted Recommended Blogs
+          %table.table.table-striped
+            %thead
+              %tr
+                %th.blog blog
+                %th.sim sim.
+                %th.reblog(style="text-align:center")
+                  %i.icon-retweet(title="reblog count")
+                %th.action
+            %tbody
+              - @top_blogs.each do |b|
+                - sim = (b[:sim]*100).round
+                - blog_name = b[:blog_name]
+                - blog_id = "blog_#{blog_name}"
+                - host = b[:host]
+                %tr
+                  %td.blog
+                    %a(href="http://#{host}" target="_blank" title="#{host}")
+                      %img.avatar.img-rounded(src="http://api.tumblr.com/v2/blog/#{host}/avatar/24" alt="#{host}")= blog_name
+                  %td.sim= sim
+                  %td.reblog
+                    %span.badge(id="#{blog_id}")
+                  %td.action
+                    %a.btn.btn-mini.btn-info(title="Follow" href="http://www.tumblr.com/follow/#{blog_name}" target="_blank")
+                      %i.icon-plus.icon-white
+          #footer_sub
+            <p class="muted credit text-right"><small><span title="#{@elapsed_time}s">&copy; 2013</span> <a href="http://ishidak.blogspot.com" target="_blank">Katsunobu Ishida</a>.</small></p>
+
+  .row
+    .span4.offset4
+      .text-center
+        %form.form-inline#form_more(method="GET")
+          %input(name="q" type="hidden" value="#{@q}")
+          %button.btn.btn-primary.btn-large.btn-block(type="submit") Get More Recommendation

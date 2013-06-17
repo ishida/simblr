@@ -1,0 +1,119 @@
+!!!
+\
+/
+  \
+  \             o8o                     .o8       oooo
+  \             `"'                    "888       `888
+  \    .oooo.o oooo  ooo. .oo.  .oo.    888oooo.   888  oooo d8b
+  \   d88(  "8 `888  `888P"Y88bP"Y88b   d88' `88b  888  `888""8P
+  \   `"Y88b.   888   888   888   888   888   888  888   888
+  \   o.  )88b  888   888   888   888   888   888  888   888     .o.
+  \   8""888P' o888o o888o o888o o888o  `Y8bod8P' o888o d888b    Y8P
+  \
+%html
+  %head(prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb#")
+    %meta(charset="utf-8")
+    = @newrelic_header
+
+    - if request.path_info == '/' && !@q.nil?
+      %title= @q.sub(/.tumblr.com$/, '') + ' - ' + @app_name
+    - else
+      %title= @app_name
+
+    %meta(name="keyword" content="Tumblr, タンブラー, Recommend, レコメンド, Suggest, サジェスト, おすすめ, 推薦, AI, 人工知能, API, Webservice, Webサービス, Web Application, Webアプリケーション, Webアプリ")
+    %meta(name="description" content="Recommending Tumblr blogs and posts for you by reference to your recent Tumblr posts.")
+
+    -# Open Graph
+    %meta(property="og:title" content="#{@app_name}")
+    %meta(property="og:type" content="website")
+    %meta(property="og:url" content="http://#{@host_name}")
+    %meta(property="og:image" content="http://#{@host_name}/apple_touch_icon_2.png")
+    %meta(property="og:site_name" content="#{@app_name}")
+    %meta(property="og:description" content="Recommending Tumblr blogs and posts for you by reference to your recent Tumblr posts.")
+
+    -# Google Webmaster Tool
+    <meta name="google-site-verification" content="lOfHaJCUC1sDW_b40mN91nXxzNymoiT4VvvB3jwtPtM" />
+
+    %link(rel="icon" type="image/x-icon" href="/favicon.ico")
+    %link(rel="apple-touch-icon-precomposed" href="/apple_touch_icon.png")
+    %link(rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.1/css/bootstrap.min.css")
+    %link(rel="stylesheet" href="css/main.css")
+    - if production?
+      / google analytics
+      :javascript
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+        ga('create', 'UA-391451-10', 'i4da.com');
+        ga('send', 'pageview');
+  %body
+    #wrap
+      #header.navbar.navbar-inverse.navbar-fixed-top
+        .navbar-inner
+          .container_wrapper
+            .container
+              %a.brand(href="/") #{@app_name}
+              %ul.nav
+                %li.active<
+                  %a(href="/") Home
+                %li<
+                  %a(href="http://ishidak.blogspot.com/2013/06/simblr.html" target="_blank") About
+              .sns_buttons
+                %span.facebook_like
+                  <iframe src="//www.facebook.com/plugins/like.php?locale=en_US&amp;href=http%3A%2F%2F#{@host_name}&amp;send=false&amp;layout=button_count&amp;width=10&amp;show_faces=false&amp;font=arial&amp;colorscheme=light&amp;action=like&amp;height=21&amp;appId=361090100607247" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:100px; height:20px;" allowTransparency="true"></iframe>
+                %span.tweet
+                  <a href="https://twitter.com/share" class="twitter-share-button" data-url="http://#{@host_name}" data-via="ishida" data-hashtags="#{@app_name}">Tweet</a>
+                  <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+                %span.google_plusone
+                  <div class="g-plusone" data-size="medium" data-href="http://#{@host_name}"></div>
+                %span.hatena_bookmark
+                  <a href="http://b.hatena.ne.jp/entry/http://#{@host_name}" class="hatena-bookmark-button" data-hatena-bookmark-title="#{@app_name}" data-hatena-bookmark-layout="simple-balloon" title="このエントリーをはてなブックマークに追加"><img src="http://b.st-hatena.com/images/entry-button/button-only.gif" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a>
+                %span.github_star
+                  <iframe src="http://ghbtns.com/github-btn.html?user=ishida&repo=simblr&type=watch&count=true" allowtransparency="true" frameborder="0" scrolling="0" width="95" height="20"></iframe>
+                %span.tumblr_share
+                  <span id="tumblr_button_abc123"></span>
+      #body
+        = yield
+      #push
+    #footer
+      .container
+        <p class="muted credit text-center">&copy; 2013 <a href="http://ishidak.blogspot.com" target="_blank">Katsunobu Ishida</a>.</p>
+    %script(src="http://code.jquery.com/jquery-1.10.0.min.js")
+    %script(src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.1/js/bootstrap.min.js")
+
+    / google plus button
+    :javascript
+      (function() {
+        var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
+        po.src = 'https://apis.google.com/js/plusone.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
+      })();
+
+    / hatena bookmark button
+    %script(type="text/javascript" src="http://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async")
+
+    / tumblr share button
+    <script src="http://platform.tumblr.com/v1/share.js"></script>
+    :javascript
+      (function() {
+        var tumblr_link_url = "http://#{@host_name}";
+        var tumblr_link_name = "#{@app_name}";
+        var tumblr_link_description = "Simblr is a web application which recommends Tumblr blogs and posts for you by reference to your recent Tumblr posts.";
+        var tumblr_button = document.createElement("a");
+        tumblr_button.setAttribute("href", "http://www.tumblr.com/share/link?url=" + encodeURIComponent(tumblr_link_url) + "&name=" + encodeURIComponent(tumblr_link_name) + "&description=" + encodeURIComponent(tumblr_link_description));
+        tumblr_button.setAttribute("title", "Share on Tumblr");
+        tumblr_button.setAttribute("style", "display:inline-block; text-indent:-9999px; overflow:hidden; width:20px; height:20px; background:url('http://platform.tumblr.com/v1/share_4.png') top left no-repeat transparent;");
+        // tumblr_button.innerHTML = "Share on Tumblr";
+        document.getElementById("tumblr_button_abc123").appendChild(tumblr_button);
+      })();
+
+    - if request.path_info == '/' && !@q.nil?
+      /
+      %script(src="js/jquery.lazyload.min.patched.js" type="text/javascript")
+      %script(src="js/main.js" type="text/javascript")
+      :javascript
+        $(function(){
+          Simblr.start('#{@q}')
+        });
+    = @newrelic_footer

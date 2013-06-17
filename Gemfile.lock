@@ -1,0 +1,74 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    backports (3.3.0)
+    dalli (2.6.4)
+    diff-lcs (1.2.4)
+    eventmachine (1.0.3)
+    excon (0.22.1)
+    faraday (0.8.7)
+      multipart-post (~> 1.1)
+    faraday_middleware (0.9.0)
+      faraday (>= 0.7.4, < 0.9)
+    haml (4.0.2)
+      tilt
+    heroku-api (0.3.11)
+      excon (~> 0.22.1)
+    json (1.7.7)
+    memcachier (0.0.2)
+    multipart-post (1.2.0)
+    newrelic_rpm (3.6.2.96)
+    nokogiri (1.5.9)
+    oauth (0.4.7)
+    puma (2.0.1)
+      rack (>= 1.1, < 2.0)
+    rack (1.5.2)
+    rack-protection (1.5.0)
+      rack
+    rack-test (0.6.2)
+      rack (>= 1.0)
+    rspec (2.13.0)
+      rspec-core (~> 2.13.0)
+      rspec-expectations (~> 2.13.0)
+      rspec-mocks (~> 2.13.0)
+    rspec-core (2.13.1)
+    rspec-expectations (2.13.0)
+      diff-lcs (>= 1.1.3, < 2.0)
+    rspec-mocks (2.13.1)
+    sanitize (2.0.3)
+      nokogiri (>= 1.4.4, < 1.6)
+      nokogiri (>= 1.4.4, < 1.6)
+    sinatra (1.4.2)
+      rack (~> 1.5, >= 1.5.2)
+      rack-protection (~> 1.4)
+      tilt (~> 1.3, >= 1.3.4)
+    sinatra-contrib (1.4.0)
+      backports (>= 2.0)
+      eventmachine
+      rack-protection
+      rack-test
+      sinatra (~> 1.4.2)
+      tilt (~> 1.3)
+    tilt (1.3.7)
+    tumblr_client (0.7.1)
+      faraday (>= 0.8)
+      faraday_middleware (>= 0.8)
+      json
+      oauth
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  dalli
+  haml
+  heroku-api
+  memcachier
+  newrelic_rpm
+  puma
+  rack-test
+  rspec
+  sanitize
+  sinatra
+  sinatra-contrib
+  tumblr_client

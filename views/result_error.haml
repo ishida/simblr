@@ -1,0 +1,9 @@
+/ result_error
+.container#result_error
+  .row
+    .span6.offset3
+      .alert.alert-error
+        - if @error_msg == 'Not Enough Reblog Info'
+          <strong>Error :</strong> Not Enough Reblog Info. Please reblog some posts somewhere in advance. (ex. <a href="http://ishida.tumblr.com/" target="_blank">ishida.tumblr.com</a>)
+        - else
+          <strong>Error :</strong> #{@error_msg}
