@@ -2,6 +2,13 @@ GEM
   remote: https://rubygems.org/
   specs:
     backports (3.3.0)
+    colorize (0.5.8)
+    coveralls (0.6.7)
+      colorize
+      multi_json (~> 1.3)
+      rest-client
+      simplecov (>= 0.7)
+      thor
     dalli (2.6.4)
     diff-lcs (1.2.4)
     eventmachine (1.0.3)
@@ -16,6 +23,8 @@ GEM
       excon (~> 0.22.1)
     json (1.7.7)
     memcachier (0.0.2)
+    mime-types (1.23)
+    multi_json (1.7.7)
     multipart-post (1.2.0)
     newrelic_rpm (3.6.2.96)
     nokogiri (1.5.9)
@@ -28,6 +37,8 @@ GEM
     rack-test (0.6.2)
       rack (>= 1.0)
     rake (10.0.4)
+    rest-client (1.6.7)
+      mime-types (>= 1.16)
     rspec (2.13.0)
       rspec-core (~> 2.13.0)
       rspec-expectations (~> 2.13.0)
@@ -39,6 +50,10 @@ GEM
     sanitize (2.0.3)
       nokogiri (>= 1.4.4, < 1.6)
       nokogiri (>= 1.4.4, < 1.6)
+    simplecov (0.7.1)
+      multi_json (~> 1.0)
+      simplecov-html (~> 0.7.1)
+    simplecov-html (0.7.1)
     sinatra (1.4.2)
       rack (~> 1.5, >= 1.5.2)
       rack-protection (~> 1.4)
@@ -50,6 +65,7 @@ GEM
       rack-test
       sinatra (~> 1.4.2)
       tilt (~> 1.3)
+    thor (0.18.1)
     tilt (1.3.7)
     tumblr_client (0.7.1)
       faraday (>= 0.8)
@@ -61,6 +77,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  coveralls
   dalli
   haml
   heroku-api
@@ -71,6 +88,7 @@ DEPENDENCIES
   rake
   rspec
   sanitize
+  simplecov
   sinatra
   sinatra-contrib
   tumblr_client

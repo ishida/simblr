@@ -10,3 +10,4 @@ spec/reports
 log
 run_*
 Procfile.*
+coverage

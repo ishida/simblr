@@ -15,7 +15,11 @@ class App < Sinatra::Base
   @@is_restarting = false
 
   configure do
+    require 'newrelic_rpm' if production?
+    require 'heroku-api' if production?
+    register Sinatra::Reloader if development?
     use Rack::Deflater
+
     set :haml, { :format => :html5 }
     set :worker_max, (ENV['WORKER_MAX'] || 10).to_i
     set :memory_kbyte_max, (ENV['MEMORY_KBYTE_MAX'] || 480000).to_i
@@ -24,29 +28,21 @@ class App < Sinatra::Base
     set :tumblr_consumer_key, (ENV['TUMBLR_CONSUMER_KEY'] ||
       open(File.dirname(__FILE__) + '/.tumblr') { |f|
         YAML.load(f) }['consumer_key'])
+    set :heroku_app_name, (ENV['HEROKU_APP_NAME'] || 'simblr')
+    cache_sec = (ENV['DEFAULT_CACHE_MAX_AGE_SEC'] || 86400).to_i
+    set :cache_max_age_sec, cache_sec
+    set :static_cache_control, [:public, :max_age => cache_sec]
   end
 
   configure :test do
     enable :raise_errors
     disable :run, :logging
-    set :cache_max_age_sec, 0
-    set :static_cache_control, 0
     @@dc_test = {}
   end
 
-  configure :development do
-    register Sinatra::Reloader
+  configure :test, :development do
     set :cache_max_age_sec, 0
     set :static_cache_control, 0
-  end
-
-  configure :production do
-    require 'newrelic_rpm'
-    require 'heroku-api'
-    cache_max_age_sec = (ENV['DEFAULT_CACHE_MAX_AGE_SEC'] || 86400).to_i
-    set :cache_max_age_sec, cache_max_age_sec
-    set :static_cache_control, [:public, :max_age => cache_max_age_sec]
-    set :heroku_app_name, ENV['HEROKU_APP_NAME']
   end
 
   configure :development, :production do
@@ -61,14 +57,11 @@ class App < Sinatra::Base
     cache_control :public, :max_age => settings.cache_max_age_sec
 
     @app_name = 'Simblr'
-    if development?
-      @host_name = request.host
-      @host_name << ":#{request.port}" unless request.port == 80
-      @host_name_enc = request.host
-      @host_name_enc << "%3a#{request.port}" unless request.port == 80
-    else
-      @host_name = request.host
-      @host_name_enc = request.host
+    @host_name = request.host
+    @host_name_enc = request.host
+    if !production? && request.port != 80
+      @host_name << ":#{request.port}"
+      @host_name_enc << "%3a#{request.port}"
     end
   end
 
@@ -82,12 +75,11 @@ class App < Sinatra::Base
   get '/' do
     q = params[:q]
 
-    if development?
-      @newrelic_header = ''
-      @newrelic_footer = ''
-    else
+    if production?
       @newrelic_header = ::NewRelic::Agent.browser_timing_header rescue ''
       @newrelic_footer = ::NewRelic::Agent.browser_timing_footer rescue ''
+    else
+      @newrelic_header = @newrelic_footer = ''
     end
 
     return haml :index if q.nil?
@@ -191,10 +183,6 @@ class App < Sinatra::Base
 
     def logger
       request.logger
-    end
-
-    def h(html)
-      Rack::Utils.escape_html(html)
     end
 
     def s(html)
