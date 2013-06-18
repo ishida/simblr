@@ -7,11 +7,15 @@ Using Ruby, Sinatra, Puma, Memcached, Heroku, jQuery, AJAX, Bootstrap, Tumblr AP
 
 You can try [the demo](http://simblr.i4da.com/).
 
+## Supported Ruby
+
+* 2.0.0
+* 1.9.3
+* 1.9.2
+
 ## Installation
 
-In this example, it is assumed that your local OS is Mac OS X 10.8.  
-Install Ruby (1.9.2, 1.9.3 or 2.0.0) and git in advance.  
-Install the others:
+Install:
 
     $ git clone https://github.com/ishida/simblr.git simblr
     $ cd simblr
@@ -22,13 +26,12 @@ Get [Tumblr API consumer key](http://www.tumblr.com/docs/en/api/v2).
 
 ### Development environment
 
-Install brew in advance.  
-Install the others (and replace such strings as "aaa" to real ones):
+Create a file including Tumblr API consumer key  
+(and replace such strings as "aaa" to real ones):
 
     $ echo 'consumer_key: "aaa"' > .tumblr
-    $ brew install memcached
 
-Run a memcached server:
+Install memcached in some way and run:
 
     $ memcached
 
@@ -46,6 +49,7 @@ Install the others:
     $ heroku create --stack cedar bbb
     $ heroku addons:add memcachier
     $ heroku addons:add newrelic
+    $ heroku config:add BUNDLE_WITHOUT=development:test
     $ heroku config:set TUMBLR_CONSUMER_KEY=aaa
     $ heroku config:set HEROKU_API_KEY=ccc
     $ heroku config:set HEROKU_APP_NAME=ddd
@@ -67,7 +71,12 @@ Server has already started. Check "http://bbb.herokuapp.com/" with a browser.
 
 Setup the development environment and execute:
 
-    $ bundle exec rspec
+    $ bundle exec rake
+
+## Code Status
+
+* master: [![Build Status](https://travis-ci.org/ishida/simblr.png?branch=master)](https://travis-ci.org/ishida/simblr) [![Coverage Status](https://coveralls.io/repos/ishida/simblr/badge.png?branch=master)](https://coveralls.io/r/ishida/simblr?branch=master)
+* develop: [![Build Status](https://travis-ci.org/ishida/simblr.png?branch=develop)](https://travis-ci.org/ishida/simblr) [![Coverage Status](https://coveralls.io/repos/ishida/simblr/badge.png?branch=develop)](https://coveralls.io/r/ishida/simblr?branch=develop)
 
 ## TODO
 
