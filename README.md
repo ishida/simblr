@@ -26,8 +26,7 @@ Get [Tumblr API consumer key](http://www.tumblr.com/docs/en/api/v2).
 
 ### Development environment
 
-Create a file including Tumblr API consumer key  
-(and replace such strings as "aaa" to real ones):
+Create a file including Tumblr API consumer key (and replace such strings as "aaa" to real ones):
 
     $ echo 'consumer_key: "aaa"' > .tumblr
 
