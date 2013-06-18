@@ -1,0 +1,12 @@
+--- 
+language: ruby
+rvm: 
+- 2.0.0
+- 1.9.3
+- 1.9.2
+env: 
+  global: 
+    secure: |-
+      OVg0hvDjDW1+IwJlEJKB89v2289RPxAGwg6wxUB14JbdOA1RQzV/t81v6068
+      h4ZebG8VBOURSi7nvN58qARKNShf1RkT9JCD3506kEO6sJ47tWUIChyvm09n
+      u9sxVur/H1vn3QtZ+cMczNHqQjVYUaRocgnkXJrC1NtST/NgQkY=

@@ -15,49 +15,53 @@ class App < Sinatra::Base
   @@is_restarting = false
 
   configure do
+    require 'newrelic_rpm' if production?
+    require 'heroku-api' if production?
+    register Sinatra::Reloader if development?
     use Rack::Deflater
-    enable :logging
+
     set :haml, { :format => :html5 }
     set :worker_max, (ENV['WORKER_MAX'] || 10).to_i
     set :memory_kbyte_max, (ENV['MEMORY_KBYTE_MAX'] || 480000).to_i
-    set :dc, Dalli::Client.new(nil, :compress => true,
-      :expires_in => (ENV['MEMCACHED_EXPIRES_IN_SEC'] || 60).to_i)
-    set :memory_dc, Dalli::Client.new(nil,
-      :expires_in => (ENV['MEM_MEMCACHED_EXPIRES_IN_SEC'] || 5).to_i)
     set :tr_max_posts_a_top_blog, (ENV['TR_MAX_POSTS_A_TOP_BLOG'] || 10).to_i
     set :tr_max_top_blogs, (ENV['TR_MAX_TOP_BLOGS'] || 10).to_i
+    set :tumblr_consumer_key, (ENV['TUMBLR_CONSUMER_KEY'] ||
+      open(File.dirname(__FILE__) + '/.tumblr') { |f|
+        YAML.load(f) }['consumer_key'])
+    set :heroku_app_name, (ENV['HEROKU_APP_NAME'] || 'simblr')
+    cache_sec = (ENV['DEFAULT_CACHE_MAX_AGE_SEC'] || 86400).to_i
+    set :cache_max_age_sec, cache_sec
+    set :static_cache_control, [:public, :max_age => cache_sec]
   end
 
-  configure :development do
-    register Sinatra::Reloader
-    set :tumblr_consumer_key, open(File.dirname(__FILE__) + '/.tumblr') { |f|
-      YAML.load(f) }['consumer_key']
+  configure :test do
+    enable :raise_errors
+    disable :run, :logging
+    @@dc_test = {}
+  end
+
+  configure :test, :development do
     set :cache_max_age_sec, 0
     set :static_cache_control, 0
   end
 
-  configure :production do
-    require 'newrelic_rpm'
-    require 'heroku-api'
-    cache_max_age_sec = (ENV['DEFAULT_CACHE_MAX_AGE_SEC'] || 86400).to_i
-    set :cache_max_age_sec, cache_max_age_sec
-    set :static_cache_control, [:public, :max_age => cache_max_age_sec]
-    set :tumblr_consumer_key, ENV['TUMBLR_CONSUMER_KEY']
-    set :heroku_app_name, ENV['HEROKU_APP_NAME']
+  configure :development, :production do
+    enable :logging
+    set :dc, Dalli::Client.new(nil, :compress => true,
+      :expires_in => (ENV['MEMCACHED_EXPIRES_IN_SEC'] || 60).to_i)
+    set :memory_dc, Dalli::Client.new(nil,
+      :expires_in => (ENV['MEM_MEMCACHED_EXPIRES_IN_SEC'] || 5).to_i)
   end
 
   before do
     cache_control :public, :max_age => settings.cache_max_age_sec
 
     @app_name = 'Simblr'
-    if development?
-      @host_name = request.host
-      @host_name << ":#{request.port}" unless request.port == 80
-      @host_name_enc = request.host
-      @host_name_enc << "%3a#{request.port}" unless request.port == 80
-    else
-      @host_name = request.host
-      @host_name_enc = request.host
+    @host_name = request.host
+    @host_name_enc = request.host
+    if !production? && request.port != 80
+      @host_name << ":#{request.port}"
+      @host_name_enc << "%3a#{request.port}"
     end
   end
 
@@ -71,12 +75,11 @@ class App < Sinatra::Base
   get '/' do
     q = params[:q]
 
-    if development?
-      @newrelic_header = ''
-      @newrelic_footer = ''
-    else
+    if production?
       @newrelic_header = ::NewRelic::Agent.browser_timing_header rescue ''
       @newrelic_footer = ::NewRelic::Agent.browser_timing_footer rescue ''
+    else
+      @newrelic_header = @newrelic_footer = ''
     end
 
     return haml :index if q.nil?
@@ -182,10 +185,6 @@ class App < Sinatra::Base
       request.logger
     end
 
-    def h(html)
-      Rack::Utils.escape_html(html)
-    end
-
     def s(html)
       Sanitize.clean(html,
         :elements => %w{br p a img blockquote},
@@ -259,6 +258,7 @@ class App < Sinatra::Base
     end
 
     def memory_usage
+      return 0 if test?
       mem = settings.memory_dc.get('memory')
       if mem.nil?
         mem = `ps -o rss= -p #{Process.pid}`.to_i
@@ -290,7 +290,11 @@ class App < Sinatra::Base
 
       @@worker_lock.synchronize do
         has_worker_available = (@@working_queries.size < settings.worker_max)
-        result_cont = settings.dc.get(q)
+        if test?
+          result_cont = @@dc_test[q]
+        else
+          result_cont = settings.dc.get(q)
+        end
         if result_cont.nil? && has_worker_available && has_memory_available && @@working_queries[q].nil?
           @@working_queries[q] = true
           works = true
@@ -309,7 +313,11 @@ class App < Sinatra::Base
           logger.info("TumblrRecommender: \"#{query}\" #{result_cont[:elapsed_time]}")
 
           @@worker_lock.synchronize do
-            settings.dc.set(query, result_cont)
+            if test?
+              @@dc_test[query] = result_cont
+            else
+              settings.dc.set(query, result_cont)
+            end
             @@working_queries.delete_if { |k, _| k == query }
           end
 
