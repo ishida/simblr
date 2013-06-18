@@ -21,13 +21,14 @@ class App < Sinatra::Base
     set :memory_kbyte_max, (ENV['MEMORY_KBYTE_MAX'] || 480000).to_i
     set :tr_max_posts_a_top_blog, (ENV['TR_MAX_POSTS_A_TOP_BLOG'] || 10).to_i
     set :tr_max_top_blogs, (ENV['TR_MAX_TOP_BLOGS'] || 10).to_i
+    set :tumblr_consumer_key, (ENV['TUMBLR_CONSUMER_KEY'] ||
+      open(File.dirname(__FILE__) + '/.tumblr') { |f|
+        YAML.load(f) }['consumer_key'])
   end
 
   configure :test do
     enable :raise_errors
     disable :run, :logging
-    set :tumblr_consumer_key, open(File.dirname(__FILE__) + '/.tumblr') { |f|
-      YAML.load(f) }['consumer_key']
     set :cache_max_age_sec, 0
     set :static_cache_control, 0
     @@dc_test = {}
@@ -35,8 +36,6 @@ class App < Sinatra::Base
 
   configure :development do
     register Sinatra::Reloader
-    set :tumblr_consumer_key, open(File.dirname(__FILE__) + '/.tumblr') { |f|
-      YAML.load(f) }['consumer_key']
     set :cache_max_age_sec, 0
     set :static_cache_control, 0
   end
@@ -47,7 +46,6 @@ class App < Sinatra::Base
     cache_max_age_sec = (ENV['DEFAULT_CACHE_MAX_AGE_SEC'] || 86400).to_i
     set :cache_max_age_sec, cache_max_age_sec
     set :static_cache_control, [:public, :max_age => cache_max_age_sec]
-    set :tumblr_consumer_key, ENV['TUMBLR_CONSUMER_KEY']
     set :heroku_app_name, ENV['HEROKU_APP_NAME']
   end
 

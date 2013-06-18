@@ -10,7 +10,7 @@ You can try [the demo](http://simblr.i4da.com/).
 ## Installation
 
 In this example, it is assumed that your local OS is Mac OS X 10.8.  
-Install Ruby 1.9.2 (, 1.9.3 or 2.0.0) and git in advance.  
+Install Ruby (1.9.2, 1.9.3 or 2.0.0) and git in advance.  
 Install the others:
 
     $ git clone https://github.com/ishida/simblr.git simblr
@@ -56,7 +56,7 @@ Options:
     $ heroku config:set MEMORY_KBYTE_MAX=480000
     $ heroku config:set WORKER_MAX=10
     $ heroku config:set MEMCACHED_EXPIRES_IN_SEC=60
-    $ heroku config:set DEFAULT_CACHE_MAX_AGE_SEC=1800
+    $ heroku config:set DEFAULT_CACHE_MAX_AGE_SEC=2592000
     $ heroku config:set TZ=Asia/Tokyo
     $ heroku config:set TR_MAX_POSTS_A_TOP_BLOG=10
     $ heroku config:set TR_MAX_TOP_BLOGS=10
