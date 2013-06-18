@@ -15,6 +15,7 @@ group :production do
 end
 
 group :test do
+  gem 'rake'
   gem 'rspec'
   gem 'rack-test'
 end

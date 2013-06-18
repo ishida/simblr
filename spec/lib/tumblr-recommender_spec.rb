@@ -15,7 +15,7 @@ describe TumblrRecommender do
     @not_found_blog_name = 'not_found'
     @not_found_blog_host = @not_found_blog_name + '.tumblr.com'
 
-    @valid_consumer_key = open(File.dirname(__FILE__) + '/../.tumblr') { |f|
+    @valid_consumer_key = open(File.dirname(__FILE__) + '/../../.tumblr') { |f|
       YAML.load(f) } ['consumer_key']
     @dummy_consumer_key = 'dummy'
 

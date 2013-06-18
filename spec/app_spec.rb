@@ -1,5 +1,11 @@
 # coding: utf-8
 require_relative 'spec_helper'
+require_relative '../app'
+
+def should_redirect_to(loc)
+  expect(last_response).to be_redirect
+  expect(last_response.location).to eq('http://example.org' << loc)
+end
 
 describe App do
 
@@ -84,14 +90,11 @@ describe App do
   end
 
   describe 'GET', '/result' do
-    let(:dc) { Dalli::Client.new }
-
     context 'with valid blog' do
       context '/result/test-normal.tumblr.com' do
         let(:path) { '/result/test-normal.tumblr.com' }
 
         it 'responds ok' do
-          dc.flush
           get path
           res = last_response
           expect(res).to be_ok, "Actual status: #{res.status}"
@@ -109,7 +112,6 @@ describe App do
             sleep(1)
             get path
           end
-          dc.flush
           expect(last_response.body).to include('<!-- result_success -->')
         end
       end
@@ -120,7 +122,6 @@ describe App do
         let(:path) { '/result/not-found-not-found-not-found.tumblr.com' }
 
         it 'responds ok' do
-          dc.flush
           get path
           res = last_response
           expect(res).to be_ok, "Actual status: #{res.status}"
@@ -143,7 +144,6 @@ describe App do
 
         it "shows 'Not Found'" do
           get path
-          dc.flush
           expect(last_response.body).to include('Not Found')
         end
       end
@@ -152,7 +152,6 @@ describe App do
         let(:path) { '/result/invalid_host_name' }
 
         it 'responds ok' do
-          dc.flush
           get path
           res = last_response
           expect(res).to be_ok, "Actual status: #{res.status}"
@@ -160,7 +159,6 @@ describe App do
 
         it "shows 'Not Found'" do
           get path
-          dc.flush
           expect(last_response.body).to include('Not Found')
         end
       end
@@ -169,7 +167,6 @@ describe App do
         let(:path) { '/result/test-no-posts.tumblr.com' }
 
         it 'responds ok' do
-          dc.flush
           get path
           res = last_response
           expect(res).to be_ok, "Actual status: #{res.status}"
@@ -192,7 +189,6 @@ describe App do
 
         it "shows 'Not Enough Reblog Info'" do
           get path
-          dc.flush
           expect(last_response.body).to include('Not Enough Reblog Info')
         end
       end

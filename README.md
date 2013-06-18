@@ -1,6 +1,6 @@
 # Simblr
 
-[Simblr](http://simblr.i4da.com/) is a web service which recommends [Tumblr](http://tumblr.com/) blogs and posts for you by reference to your recent Tumblr posts.
+[Simblr](http://simblr.i4da.com/) is a web application which recommends [Tumblr](http://tumblr.com/) blogs and posts for you by reference to your recent Tumblr posts.
 
 Recommending Tumblr posts using algorithms of collaborative filtering and others.  
 Using Ruby, Sinatra, Puma, Memcached, Heroku, jQuery, AJAX, Bootstrap, Tumblr API and others.
@@ -65,11 +65,7 @@ Server has already started. Check "http://bbb.herokuapp.com/" with a browser.
 
 ## Testing
 
-Setup the development environment and run a memcached server:
-
-    $ memcached
-
-And execute:
+Setup the development environment and execute:
 
     $ bundle exec rspec
 

@@ -16,16 +16,21 @@ class App < Sinatra::Base
 
   configure do
     use Rack::Deflater
-    enable :logging
     set :haml, { :format => :html5 }
     set :worker_max, (ENV['WORKER_MAX'] || 10).to_i
     set :memory_kbyte_max, (ENV['MEMORY_KBYTE_MAX'] || 480000).to_i
-    set :dc, Dalli::Client.new(nil, :compress => true,
-      :expires_in => (ENV['MEMCACHED_EXPIRES_IN_SEC'] || 60).to_i)
-    set :memory_dc, Dalli::Client.new(nil,
-      :expires_in => (ENV['MEM_MEMCACHED_EXPIRES_IN_SEC'] || 5).to_i)
     set :tr_max_posts_a_top_blog, (ENV['TR_MAX_POSTS_A_TOP_BLOG'] || 10).to_i
     set :tr_max_top_blogs, (ENV['TR_MAX_TOP_BLOGS'] || 10).to_i
+  end
+
+  configure :test do
+    enable :raise_errors
+    disable :run, :logging
+    set :tumblr_consumer_key, open(File.dirname(__FILE__) + '/.tumblr') { |f|
+      YAML.load(f) }['consumer_key']
+    set :cache_max_age_sec, 0
+    set :static_cache_control, 0
+    @@dc_test = {}
   end
 
   configure :development do
@@ -44,6 +49,14 @@ class App < Sinatra::Base
     set :static_cache_control, [:public, :max_age => cache_max_age_sec]
     set :tumblr_consumer_key, ENV['TUMBLR_CONSUMER_KEY']
     set :heroku_app_name, ENV['HEROKU_APP_NAME']
+  end
+
+  configure :development, :production do
+    enable :logging
+    set :dc, Dalli::Client.new(nil, :compress => true,
+      :expires_in => (ENV['MEMCACHED_EXPIRES_IN_SEC'] || 60).to_i)
+    set :memory_dc, Dalli::Client.new(nil,
+      :expires_in => (ENV['MEM_MEMCACHED_EXPIRES_IN_SEC'] || 5).to_i)
   end
 
   before do
@@ -259,6 +272,7 @@ class App < Sinatra::Base
     end
 
     def memory_usage
+      return 0 if test?
       mem = settings.memory_dc.get('memory')
       if mem.nil?
         mem = `ps -o rss= -p #{Process.pid}`.to_i
@@ -290,7 +304,11 @@ class App < Sinatra::Base
 
       @@worker_lock.synchronize do
         has_worker_available = (@@working_queries.size < settings.worker_max)
-        result_cont = settings.dc.get(q)
+        if test?
+          result_cont = @@dc_test[q]
+        else
+          result_cont = settings.dc.get(q)
+        end
         if result_cont.nil? && has_worker_available && has_memory_available && @@working_queries[q].nil?
           @@working_queries[q] = true
           works = true
@@ -309,7 +327,11 @@ class App < Sinatra::Base
           logger.info("TumblrRecommender: \"#{query}\" #{result_cont[:elapsed_time]}")
 
           @@worker_lock.synchronize do
-            settings.dc.set(query, result_cont)
+            if test?
+              @@dc_test[query] = result_cont
+            else
+              settings.dc.set(query, result_cont)
+            end
             @@working_queries.delete_if { |k, _| k == query }
           end
 
