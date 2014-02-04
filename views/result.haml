@@ -8,20 +8,16 @@
           %button#form_btn.btn.btn-primary(type="submit" data-loading-text="Loading..." disabled)<
             %i.icon-search.icon-white
 .container
-  .ad_728_90_container(style="width: 728px; height: 90px; margin: 20px auto 20px auto;")
+  #ad_container
     - if production?
-      / google analytics
+      / google adsense
+      <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <!-- responsible, 20140204, simblr.i4da.com -->
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-4027729811091453" data-ad-slot="5304618735" data-ad-format="auto"></ins>
       :javascript
-        google_ad_client = "ca-pub-4027729811091453";
-        /* 728x90, 20130526, simblr.i4da.com */
-        google_ad_slot = "4250694731";
-        google_ad_width = 728;
-        google_ad_height = 90;
-      <script type="text/javascript"
-      src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
-      </script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
     - else
-      .ad_728_90.muted(style="width: 728px; height: 90px; background: #eee;") ad.
+      .ad_dummy ad.
 .container#result_loading(style="display: none")
   .row
     %noscript
