@@ -9,7 +9,6 @@ require 'memcachier'
 require_relative 'lib/tumblr-recommender'
 
 class App < Sinatra::Base
-  VERSION = '0.1.1'
   @@worker_lock = Mutex.new
   @@working_queries = {}
   @@restarting_lock = Mutex.new
