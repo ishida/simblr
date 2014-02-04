@@ -1,4 +1,4 @@
-# Simblr
+# Simblr [![Build Status](https://travis-ci.org/ishida/simblr.png?branch=master)](https://travis-ci.org/ishida/simblr) [![Coverage Status](https://coveralls.io/repos/ishida/simblr/badge.png?branch=master)](https://coveralls.io/r/ishida/simblr?branch=master)
 
 [Simblr](http://simblr.i4da.com/) is a web application which recommends [Tumblr](http://tumblr.com/) blogs and posts for you by reference to your recent Tumblr posts.
 
@@ -71,11 +71,6 @@ Server has already started. Check "http://bbb.herokuapp.com/" with a browser.
 Setup the development environment and execute:
 
     $ bundle exec rake
-
-## Code Status
-
-* master: [![Build Status](https://travis-ci.org/ishida/simblr.png?branch=master)](https://travis-ci.org/ishida/simblr) [![Coverage Status](https://coveralls.io/repos/ishida/simblr/badge.png?branch=master)](https://coveralls.io/r/ishida/simblr?branch=master)
-* develop: [![Build Status](https://travis-ci.org/ishida/simblr.png?branch=develop)](https://travis-ci.org/ishida/simblr) [![Coverage Status](https://coveralls.io/repos/ishida/simblr/badge.png?branch=develop)](https://coveralls.io/r/ishida/simblr?branch=develop)
 
 ## TODO
 
