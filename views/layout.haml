@@ -14,7 +14,7 @@
   %head(prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb#")
     %meta(charset="utf-8")
     = @newrelic_header
-
+    %meta(name="viewport" content="width=device-width, initial-scale=1, user-scalable=no")
     - if request.path_info == '/' && !@q.nil?
       %title= @q.sub(/.tumblr.com$/, '') + ' - ' + @app_name
     - else
@@ -36,7 +36,8 @@
 
     %link(rel="icon" type="image/x-icon" href="/favicon.ico")
     %link(rel="apple-touch-icon-precomposed" href="/apple_touch_icon.png")
-    %link(rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.1/css/bootstrap.min.css")
+    %link(rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/2.3.2/css/bootstrap.min.css")
+    %link(rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/2.3.2/css/bootstrap-responsive.min.css")
     %link(rel="stylesheet" href="css/main.css")
     - if production?
       / google analytics
@@ -48,39 +49,43 @@
         ga('create', 'UA-391451-10', 'i4da.com');
         ga('send', 'pageview');
   %body
-    #wrap
+    #header_body_wrapper
       #header.navbar.navbar-inverse.navbar-fixed-top
         .navbar-inner
-          .container_wrapper
-            .container
-              %a.brand(href="/") #{@app_name}
+          .container
+            %button(type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse")
+              %span.icon-bar
+              %span.icon-bar
+              %span.icon-bar
+            %a.brand(href="/") #{@app_name}
+            .nav-collapse.collapse
               %ul.nav
                 %li.active<
                   %a(href="/") Home
                 %li<
                   %a(href="http://ishidak.blogspot.com/2013/06/simblr.html" target="_blank") About
-              .sns_buttons
-                %span.facebook_like
-                  <iframe src="//www.facebook.com/plugins/like.php?locale=en_US&amp;href=http%3A%2F%2F#{@host_name}&amp;send=false&amp;layout=button_count&amp;width=10&amp;show_faces=false&amp;font=arial&amp;colorscheme=light&amp;action=like&amp;height=21&amp;appId=361090100607247" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:100px; height:20px;" allowTransparency="true"></iframe>
-                %span.tweet
-                  <a href="https://twitter.com/share" class="twitter-share-button" data-url="http://#{@host_name}" data-via="ishida" data-hashtags="#{@app_name}">Tweet</a>
-                  <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
-                %span.google_plusone
-                  <div class="g-plusone" data-size="medium" data-href="http://#{@host_name}"></div>
-                %span.hatena_bookmark
-                  <a href="http://b.hatena.ne.jp/entry/http://#{@host_name}" class="hatena-bookmark-button" data-hatena-bookmark-title="#{@app_name}" data-hatena-bookmark-layout="simple-balloon" title="このエントリーをはてなブックマークに追加"><img src="http://b.st-hatena.com/images/entry-button/button-only.gif" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a>
-                %span.github_star
-                  <iframe src="http://ghbtns.com/github-btn.html?user=ishida&repo=simblr&type=watch&count=true" allowtransparency="true" frameborder="0" scrolling="0" width="95" height="20"></iframe>
-                %span.tumblr_share
-                  <span id="tumblr_button_abc123"></span>
+            #sns_buttons
+              %span.facebook_like
+                <iframe src="//www.facebook.com/plugins/like.php?locale=en_US&amp;href=http%3A%2F%2F#{@host_name}&amp;send=false&amp;layout=button_count&amp;width=10&amp;show_faces=false&amp;font=arial&amp;colorscheme=light&amp;action=like&amp;height=21&amp;appId=361090100607247" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:100px; height:20px;" allowTransparency="true"></iframe>
+              %span.tweet
+                <a href="https://twitter.com/share" class="twitter-share-button" data-url="http://#{@host_name}" data-via="ishida" data-hashtags="#{@app_name}">Tweet</a>
+                <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+              %span.google_plusone
+                <div class="g-plusone" data-size="medium" data-href="http://#{@host_name}"></div>
+              %span.hatena_bookmark
+                <a href="http://b.hatena.ne.jp/entry/http://#{@host_name}" class="hatena-bookmark-button" data-hatena-bookmark-title="#{@app_name}" data-hatena-bookmark-layout="simple-balloon" title="このエントリーをはてなブックマークに追加"><img src="http://b.st-hatena.com/images/entry-button/button-only.gif" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a>
+              %span.github_star
+                <iframe src="http://ghbtns.com/github-btn.html?user=ishida&repo=simblr&type=watch&count=true" allowtransparency="true" frameborder="0" scrolling="0" width="95" height="20"></iframe>
+              %span.tumblr_share
+                <span id="tumblr_button_abc123"></span>
       #body
         = yield
-      #push
+      #footer_pusher
     #footer
       .container
         <p class="muted credit text-center">&copy; 2013 <a href="http://ishidak.blogspot.com" target="_blank">Katsunobu Ishida</a>.</p>
     %script(src="http://code.jquery.com/jquery-1.10.0.min.js")
-    %script(src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.1/js/bootstrap.min.js")
+    %script(src="//netdna.bootstrapcdn.com/bootstrap/2.3.2/js/bootstrap.min.js")
 
     / google plus button
     :javascript

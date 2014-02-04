@@ -3,15 +3,141 @@ body {
   height: 100%; /* The html and body elements cannot have any padding or margin. */
 }
 
+/* Responsive
+-------------------------------------------------- */
+
+/* Desktop or default */
+#body {
+  padding-top: 41px;
+}
+
+#form_large {
+  padding-top: 100px;
+}
+
+#ad_container {
+  text-align: center;
+  margin: 20px auto;
+}
+
+.ad_dummy {
+  background: #eee;
+  width: 728px;
+  height: 90px;
+  color: #999;
+  margin: auto;
+}
+
+#result_loading, #result_error {
+  padding-top: 130px;
+}
+
+#sidebar.affix {
+  top: 40px;
+}
+
+#sidebar {
+  width: 300px;
+}
+
+/* Desktop large */
+@media (min-width: 1200px) {
+  #sidebar {
+    width: 370px;
+  }
+}
+
+/* Tablet to desktop */
+@media (max-width: 979px) {
+  #body {
+    margin-top: -20px;
+    padding-top: 0px;
+  }
+
+  #sidebar {
+    width: 228px;
+  }
+
+  #sidebar.affix {
+    top: 0px;
+  }
+}
+
+/* Tablet */
+@media (max-width: 767px) {
+  #body {
+    margin-right: -20px;
+    margin-left: -20px;
+  }
+
+  #sidebar {
+    width: 100%;
+  }
+
+  #sidebar,
+  #sidebar.affix,
+  #sidebar.affix-top {
+    position: static;
+  }
+
+  #form_header,
+  #form_large {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+
+  #form_large {
+    padding-top: 20px;
+  }
+
+  #form_input {
+    width: 210px;
+  }
+
+  .ad_dummy {
+    width: 468px;
+    height: 60px;
+  }
+
+  #result_loading,
+  #result_error {
+    padding: 50px 10px 0px;
+  }
+}
+
+/* Landscape phones */
+@media (max-width: 480px) {
+  #body {
+    margin-top: -20px;
+    padding-top: 0px;
+  }
+
+  #form_large {
+    padding-top: 10px;
+  }
+
+  #ad_container {
+    margin: 0px auto 20px;
+  }
+
+  .ad_dummy {
+    width: 320px;
+    height: 50px;
+  }
+}
+
+/* Sticky footer
+-------------------------------------------------- */
+
 /* Wrapper for page content to push down footer */
-#wrap {
+#header_body_wrapper {
   min-height: 100%;
   height: auto !important;
   height: 100%;
   margin: 0 auto -40px; /* Negative indent footer by it's height */
 }
 
-#push,
+#footer_pusher,
 #footer {
   height: 40px; /* Set the fixed height of the footer here */
 }
@@ -29,65 +155,86 @@ body {
   }
 }
 
-#body {
-  padding-top: 41px;
+/* SNS buttons
+-------------------------------------------------- */
+
+#sns_buttons {
+  margin-top: 10px;
+  margin-right: 10px;
+  margin-left: 10px;
+  text-align: right;
+}
+
+#sns_buttons .facebook_like {
+  margin-right: -15px;
+}
+
+#sns_buttons .tweet {
+  margin-right: -22px;
+}
+
+#sns_buttons .google_plusone {
+  margin-right: -22px;
+}
+
+#sns_buttons .hatena_bookmark {
+  margin-right: 10px;
+}
+
+#sns_buttons .github_star {
+  margin-right: -15px;
+}
+
+/* Sidebar
+-------------------------------------------------- */
+
+#sidebar th {
+  color: #444;
+  font-size: 0.9em;
+}
+
+#sidebar th.sim {
+  width: 40px;
+}
+
+#sidebar th.reblog,
+#sidebar td.reblog {
+  width: 40px;
+  text-align: center;
+}
+
+#sidebar th.action {
+  width: 28px;
+}
+
+#sidebar td.blog {
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+#footer_sub {
+  margin-bottom: 40px;
 }
 
 #footer_sub a {
   color: #888;
 }
 
-.container_wrapper {
-  padding-left: 10px;
-  padding-right: 10px;
+/* Posts
+-------------------------------------------------- */
+
+#posts {
+  word-break: break-all;
 }
 
-.sns_buttons {
-  margin-top: 10px;
-  margin-bottom: 10px;
-  overflow: hidden;
-  white-space: nowrap;
-  max-height: 20px;
-  width: 500px;
-  text-align: right;
-  float: right;
-}
-
-.sns_buttons .facebook_like {
-  margin-right: -15px;
-}
-
-.sns_buttons .tweet {
-  margin-right: -22px;
-}
-
-.sns_buttons .google_plusone {
-  margin-right: -22px;
-}
-
-.sns_buttons .hatena_bookmark {
-  margin-right: 10px;
-}
-
-.sns_buttons .github_star {
-  margin-right: -15px;
-}
-
-#sidebar {
-  width: 300px;
-}
-
-#sidebar.affix {
-  top: 40px;
+#posts_footer {
+  text-align: center;
+  padding: 0 5px;
 }
 
 .img-rounded {
   -webkit-border-radius: 3px;
   border-radius: 3px;
-}
-
-#form_large {
-  padding-top: 100px;
 }
 
 #form_header {
@@ -101,31 +248,10 @@ body {
   width: 70px;
 }
 
-#result_loading, #result_error {
-  padding-top: 130px;
-}
-
-.table th {
-  color: #444;
-  font-size: 0.9em;
-}
-
-#sidebar th.reblog, #sidebar td.reblog {
-  width: 40px;
-  text-align: center;
-}
-
-#sidebar td.blog {
-  overflow: hidden;
-  white-space: nowrap;
-  width: 150px;
-  max-width: 150px;
-}
-
 .post {
   border-bottom: 1px solid #e3e3e3;
   min-height: 20px;
-  padding: 19px 19px 30px 5px;
+  padding: 19px 5px 30px;
   margin-bottom: 20px;
 }
 
@@ -159,7 +285,7 @@ body {
   margin-right: 5px;
 }
 
-.posts .avatar {
+#posts .avatar {
   margin-left: 5px;
 }
 
